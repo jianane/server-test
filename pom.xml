@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com</groupId>
+    <artifactId>mystic</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.0.7.RELEASE</version>
+    </parent>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-config</artifactId>
+            <version>2.0.4.RELEASE</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+
+        <resources>
+            <resource>
+                <!-- 根据打包时传递进来的deploy.type的类型（dev，beta，prod）来选择打包相应的配置文件 -->
+                <directory>src/main/resources.${deploy.type}</directory>
+            </resource>
+            <!-- 所有环境公共使用的配置文件放在该目录下 -->
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+    </build>
+
+    <profiles>
+        <profile>
+            <!-- 定义dev环境，这里的deploy.type和上面的${deploy.type}中应用的属性名要保持一致，该名称是可以任意定义的，只要保持两个一致即可 -->
+            <id>dev</id>
+            <properties>
+                <deploy.type>dev</deploy.type>
+            </properties>
+            <!-- 这里将dev环境设置为默认的环境，即：如果在打包时(mvn clean package -Dmaven.test.skip=true -Pxxx)，不指定-P参数值，则默认打包为dev环境 -->
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+
+        <profile>
+            <id>prod</id>
+            <properties>
+                <deploy.type>prod</deploy.type>
+            </properties>
+        </profile>
+    </profiles>
+</project>
